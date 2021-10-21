@@ -1,0 +1,40 @@
+# options for analysis running
+run:
+  timeout: 2m
+
+# output configuration options
+output:
+  # sorts results by: filepath, line and column
+  sort-results: true
+
+linters:
+  enable:
+    - deadcode
+    - errcheck
+    - gosimple
+    - govet
+    - ineffassign
+    - staticcheck
+    - structcheck
+    - typecheck
+    - unused
+    - varcheck
+
+# all available settings of specific linters
+linters-settings:
+  gosimple:
+    # Select the Go version to target. The default is '1.13'.
+    go: "1.17"
+
+  staticcheck:
+    # Select the Go version to target. The default is '1.13'.
+    go: "1.17"
+    checks: [ "all" ]
+
+  stylecheck:
+    # Select the Go version to target. The default is '1.13'.
+    go: "1.17"
+
+  unused:
+    # Select the Go version to target. The default is '1.13'.
+    go: "1.17"
