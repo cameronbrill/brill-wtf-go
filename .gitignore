@@ -17,3 +17,6 @@
 
 # IDE files
 .idea
+
+tmp
+**.swp
