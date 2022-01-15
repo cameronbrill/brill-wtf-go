@@ -2,9 +2,9 @@ name: "Golang code checks"
 
 on:
   push:
-    branches: [ main ]
+    branches: [main]
   pull_request:
-    branches: [ main ]
+    branches: [main]
 
 jobs:
   format:
@@ -15,8 +15,8 @@ jobs:
       - name: Format
         uses: Jerome1337/gofmt-action@v1.0.4
         with:
-          gofmt-path: '.'
-          gofmt-flags: '-l -d'
+          gofmt-path: "."
+          gofmt-flags: "-l -d"
   lint:
     name: lint go files
     runs-on: ubuntu-latest
@@ -34,3 +34,11 @@ jobs:
       - uses: actions/checkout@v2
       - name: Build binary
         run: go build .
+  test:
+    name: test
+    runs-on: ubuntu-latest
+    steps:
+      - name: Run coverage
+        run: go test -race -coverprofile=coverage.txt -covermode=atomic
+      - name: Upload coverage to Codecov
+        run: bash <(curl -s https://codecov.io/bash)
