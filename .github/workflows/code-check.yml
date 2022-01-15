@@ -33,7 +33,7 @@ jobs:
     steps:
       - uses: actions/checkout@v2
       - name: Build binary
-        run: go build .
+        run: go build cmd/link/main.go
   test:
     name: test
     runs-on: ubuntu-latest
