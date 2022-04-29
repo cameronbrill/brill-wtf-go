@@ -18,5 +18,5 @@ grpc/generate:
 		--go-grpc_out=./${PROTO_DIR} --go-grpc_opt=paths=source_relative \
 		${PROTO_DIR}/*.proto
 
-clean-all:
-	rm 
+clean:
+	rm build/*
