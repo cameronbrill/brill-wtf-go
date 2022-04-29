@@ -17,3 +17,7 @@
 
 # IDE files
 .idea
+
+build/**
+.swp
+.swo
