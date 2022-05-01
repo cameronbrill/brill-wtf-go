@@ -1,22 +1,32 @@
 syntax = "proto3";
 
-option go_package = "github.com/cameronbrill/go-project-template/grpc";
+option go_package = "github.com/cameronbrill/brill-wtf-go/grpc";
 
 package grpc;
 
-service UserService {
-  rpc GetUsers (GetUsersRequest) returns (GetUsersResponse) {}
+service LinkService {
+  rpc NewLink(NewLinkRequest) returns (NewLinkResponse) {}
+  rpc ShortURLToLink(ShortURLToLinkRequest) returns (ShortURLToLinkResponse) {}
 }
 
-message User {
+message Link {
   int64 id = 1;
-  string name = 2;
+  string original = 2;
+  string short = 3;
 }
 
-message GetUsersRequest {
-  repeated int64 ids = 1; 
+message NewLinkRequest {
+  string original = 1;
 }
   
-message GetUsersResponse {
-  repeated User users = 1; 
+message NewLinkResponse {
+  Link link = 1;
+}
+
+message ShortURLToLinkRequest {
+  string short = 1;
+}
+
+message ShortURLToLinkResponse {
+  Link link = 1;
 }
