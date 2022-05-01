@@ -21,7 +21,7 @@ func New( /* a database connection would be injected here */ ) *s {
 	}
 }
 
-func (s *s) NewShortURL(orig string) (string, error) {
+func (s *s) NewLink(orig string) (Link, error) {
 	l, err := generator.NewXKPassword(&config.GeneratorConfig{
 		NumWords:           3,
 		WordLenMin:         3,
@@ -30,12 +30,16 @@ func (s *s) NewShortURL(orig string) (string, error) {
 		CaseTransform:      "LOWER",
 		PaddingType:        "FIXED",
 	}).Generate()
-	if err != nil {
-		return "", fmt.Errorf("generating link: %w", err)
+	link := Link{
+		Original: orig,
+		Short:    l,
 	}
-	return l, nil
+	if err != nil {
+		return link, fmt.Errorf("generating link: %w", err)
+	}
+	return link, nil
 }
 
-func (s *s) ShortToLong(short string) (string, error) {
-	return "", nil
+func (s *s) ShortURLToLink(short string) (Link, error) {
+	return Link{}, nil
 }
