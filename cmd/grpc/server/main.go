@@ -16,7 +16,7 @@ func main() {
 	ctrl := controller.New(svc)
 
 	server := grpc.NewServer()
-	tgrpc.RegisterUserServiceServer(server, ctrl)
+	tgrpc.RegisterLinkServiceServer(server, ctrl)
 	reflection.Register(server)
 
 	conn, err := net.Listen("tcp", os.Getenv("GRPC_ADDR"))
