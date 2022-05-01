@@ -4,9 +4,9 @@ import (
 	"net"
 	"os"
 
-	tgrpc "github.com/cameronbrill/go-project-template/grpc"
-	"github.com/cameronbrill/go-project-template/grpc/controller"
-	"github.com/cameronbrill/go-project-template/service"
+	tgrpc "github.com/cameronbrill/brill-wtf-go/grpc"
+	"github.com/cameronbrill/brill-wtf-go/grpc/controller"
+	"github.com/cameronbrill/brill-wtf-go/service"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/reflection"
 )
