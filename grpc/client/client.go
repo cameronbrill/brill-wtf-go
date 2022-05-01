@@ -3,13 +3,13 @@ package client
 import (
 	"context"
 
-	tgrpc "github.com/cameronbrill/go-project-template/grpc"
-	"github.com/cameronbrill/go-project-template/service"
+	tgrpc "github.com/cameronbrill/brill-wtf-go/grpc"
+	"github.com/cameronbrill/brill-wtf-go/service"
 	"google.golang.org/grpc"
 )
 
 type svc struct {
-	client tgrpc.UserServiceClient
+	client tgrpc.LinkServiceClient
 }
 
 func New(conn string) (service.Service, error) {
@@ -19,35 +19,34 @@ func New(conn string) (service.Service, error) {
 	}
 
 	return &svc{
-		client: tgrpc.NewUserServiceClient(c),
+		client: tgrpc.NewLinkServiceClient(c),
 	}, nil
 }
 
-func (s *svc) GetUsers(ids []int64) (map[int64]service.User, error) {
-	users, err := s.client.GetUsers(context.Background(), &tgrpc.GetUsersRequest{Ids: ids})
+func (s *svc) NewLink(orig string) (service.Link, error) {
+	link, err := s.client.NewLink(context.Background(), &tgrpc.NewLinkRequest{Original: orig})
+	var Link service.Link
 	if err != nil {
-		return nil, err
+		return Link, err
 	}
-	var ret map[int64]service.User
-	for _, u := range users.Users {
-		ret[u.Id] = unmarshalUser(u)
-	}
-	return ret, nil
+	Link = unmarshalLink(link.Link)
+	return Link, nil
 }
 
-func (s *svc) GetUser(id int64) (service.User, error) {
-	u, err := s.client.GetUsers(context.Background(), &tgrpc.GetUsersRequest{Ids: []int64{id}})
-	var user service.User
+func (s *svc) ShortURLToLink(shortURL string) (service.Link, error) {
+	link, err := s.client.ShortURLToLink(context.Background(), &tgrpc.ShortURLToLinkRequest{Short: shortURL})
+	var Link service.Link
 	if err != nil {
-		return user, err
+		return Link, err
 	}
-	user = unmarshalUser(u.Users[0])
-	return user, nil
+	Link = unmarshalLink(link.Link)
+	return Link, nil
 }
 
-func unmarshalUser(u *tgrpc.User) service.User {
-	return service.User{
-		ID:   u.Id,
-		Name: u.Name,
+func unmarshalLink(u *tgrpc.Link) service.Link {
+	return service.Link{
+		ID:       u.Id,
+		Original: u.Original,
+		Short:    u.Short,
 	}
 }
