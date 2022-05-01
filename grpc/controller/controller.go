@@ -3,34 +3,51 @@ package controller
 import (
 	"context"
 
-	"github.com/cameronbrill/go-project-template/grpc"
-	"github.com/cameronbrill/go-project-template/service"
+	"github.com/cameronbrill/brill-wtf-go/grpc"
+	"github.com/cameronbrill/brill-wtf-go/service"
 )
 
-type userServiceController struct {
-	userService service.Service
-	grpc.UnimplementedUserServiceServer
+type LinkServiceController struct {
+	LinkService service.Service
+	grpc.UnimplementedLinkServiceServer
 }
 
-func New(svc service.Service) grpc.UserServiceServer {
-	return userServiceController{
-		userService: svc,
+func New(svc service.Service) grpc.LinkServiceServer {
+	return LinkServiceController{
+		LinkService: svc,
 	}
 }
 
-func (c userServiceController) GetUsers(ctx context.Context, req *grpc.GetUsersRequest) (*grpc.GetUsersResponse, error) {
-	resMap, err := c.userService.GetUsers(req.GetIds())
+func (c LinkServiceController) NewLink(ctx context.Context, req *grpc.NewLinkRequest) (*grpc.NewLinkResponse, error) {
+	link, err := c.LinkService.NewLink(req.Original)
 	if err != nil {
 		return nil, err
 	}
 
-	var resp grpc.GetUsersResponse
-	for _, user := range resMap {
-		resp.Users = append(resp.Users, &grpc.User{
-			Id:   user.ID,
-			Name: user.Name,
-		})
-	}
+	var resp grpc.NewLinkResponse
+
+	resp.Link = marshalLink(link)
 
 	return &resp, nil
+}
+
+func (c LinkServiceController) ShortURLToLink(ctx context.Context, req *grpc.ShortURLToLinkRequest) (*grpc.ShortURLToLinkResponse, error) {
+	link, err := c.LinkService.ShortURLToLink(req.Short)
+	if err != nil {
+		return nil, err
+	}
+
+	var resp grpc.ShortURLToLinkResponse
+
+	resp.Link = marshalLink(link)
+
+	return &resp, nil
+}
+
+func marshalLink(l service.Link) *grpc.Link {
+	return &grpc.Link{
+		Id:       l.ID,
+		Original: l.Original,
+		Short:    l.Short,
+	}
 }
