@@ -1,39 +1,41 @@
 package service
 
+import (
+	"fmt"
+
+	"github.com/danmrichards/xkpassgo/pkg/config"
+	"github.com/danmrichards/xkpassgo/pkg/generator"
+)
+
 type s struct {
 	// a database dependency would go here but instead we're going to have a static map
-	m map[int64]User
+	m map[string]string
 }
 
 // New instantiates a new service.
 func New( /* a database connection would be injected here */ ) *s {
 	return &s{
-		m: map[int64]User{
-			1: {ID: 1, Name: "Alice"},
-			2: {ID: 2, Name: "Bob"},
-			3: {ID: 3, Name: "Carol"},
+		m: map[string]string{
+			"abc": "https://github.com/cameronbrill/create-go-app",
 		},
 	}
 }
 
-func (s *s) GetUser(id int64) (result User, err error) {
-	// instead of querying a database, we just query our static map
-	if result, ok := s.m[id]; ok {
-		return result, nil
+func (s *s) NewShortURL(orig string) (string, error) {
+	l, err := generator.NewXKPassword(&config.GeneratorConfig{
+		NumWords:           3,
+		WordLenMin:         3,
+		WordLenMax:         6,
+		SeparatorCharacter: "-",
+		CaseTransform:      "LOWER",
+		PaddingType:        "FIXED",
+	}).Generate()
+	if err != nil {
+		return "", fmt.Errorf("generating link: %w", err)
 	}
-
-	return result, ErrNotFound
+	return l, nil
 }
 
-func (s *s) GetUsers(ids []int64) (result map[int64]User, err error) {
-	// always a good idea to return non-nil maps to avoid nil pointer dereferences
-	result = map[int64]User{}
-
-	for _, id := range ids {
-		if u, ok := s.m[id]; ok {
-			result[id] = u
-		}
-	}
-
-	return
+func (s *s) ShortToLong(short string) (string, error) {
+	return "", nil
 }
