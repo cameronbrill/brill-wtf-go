@@ -4,13 +4,13 @@ go 1.18
 
 require (
 	github.com/danmrichards/xkpassgo v1.0.0
+	github.com/go-chi/chi/v5 v5.0.7
 	google.golang.org/grpc v1.46.0
 	google.golang.org/protobuf v1.28.0
 )
 
 require (
 	github.com/fsnotify/fsnotify v1.4.7 // indirect
-	github.com/go-chi/chi/v5 v5.0.7 // indirect
 	github.com/gobuffalo/envy v1.7.1 // indirect
 	github.com/gobuffalo/logger v1.0.1 // indirect
 	github.com/gobuffalo/packd v0.3.0 // indirect
