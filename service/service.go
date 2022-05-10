@@ -41,5 +41,11 @@ func (s *s) NewLink(orig string) (Link, error) {
 }
 
 func (s *s) ShortURLToLink(short string) (Link, error) {
-	return Link{}, nil
+	if long, ok := s.m[short]; ok {
+		return Link{
+			Original: long,
+			Short:    short,
+		}, nil
+	}
+	return Link{}, fmt.Errorf("invalid short URL: %s", short)
 }
