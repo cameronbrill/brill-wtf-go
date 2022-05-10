@@ -1,6 +1,6 @@
 PROTO_DIR=grpc
 BUILD_DIR=build
-SUB_DIRS=example grpc/server
+SUB_DIRS=example grpc/server rest
 BUILD_TARGETS=$(addprefix cmd/,$(SUB_DIRS))
 
 all: deps $(BUILD_TARGETS)
