@@ -37,6 +37,7 @@ func (s *s) NewLink(orig string) (Link, error) {
 	if err != nil {
 		return link, fmt.Errorf("generating link: %w", err)
 	}
+	s.m[link.Short] = link.Original
 	return link, nil
 }
 
