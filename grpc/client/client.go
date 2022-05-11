@@ -6,6 +6,7 @@ import (
 	tgrpc "github.com/cameronbrill/brill-wtf-go/grpc"
 	"github.com/cameronbrill/brill-wtf-go/service"
 	"google.golang.org/grpc"
+	"google.golang.org/grpc/credentials/insecure"
 )
 
 type svc struct {
@@ -13,7 +14,7 @@ type svc struct {
 }
 
 func New(conn string) (service.Service, error) {
-	c, err := grpc.Dial(conn, grpc.WithInsecure())
+	c, err := grpc.Dial(conn, grpc.WithTransportCredentials(insecure.NewCredentials()))
 	if err != nil {
 		return nil, err
 	}
