@@ -6,3 +6,11 @@
 Contains common things that I add to all of my go projects.
 
 `make all`
+
+### adding new executable
+
+add any `cmd/*` path to `Makefile` like so:
+
+```
+SUB_DIRS=example grpc/server rest
+```
