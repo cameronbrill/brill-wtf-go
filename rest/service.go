@@ -26,7 +26,10 @@ func (r linkRouter) routes(args ...bool) chi.Router {
 	mountedRouter := chi.NewRouter()
 
 	mountedRouter.Get("/", func(w http.ResponseWriter, r *http.Request) {
-		w.Write([]byte("welcome to the link service\nroute to /new/{link} to create a new short link\notherwise, route to /{link} to get the original link"))
+		_, err := w.Write([]byte("welcome to the link service\nroute to /new/{link} to create a new short link\notherwise, route to /{link} to get the original link"))
+		if err != nil {
+			http.Error(w, err.Error(), http.StatusInternalServerError)
+		}
 	})
 
 	mountedRouter.Route("/new/{link}", func(subRouter chi.Router) {
