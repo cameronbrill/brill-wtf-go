@@ -41,6 +41,7 @@ func (r linkRouter) routes(args ...bool) chi.Router {
 			handlerFunc = r.c.ShortURLToLinkRedirect
 		}
 		subRouter.Get("/", handlerFunc)
+		subRouter.Post("/", r.c.NewLink)
 	})
 	return mountedRouter
 }
