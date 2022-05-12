@@ -26,7 +26,12 @@ func (c LinkServiceController) NewLink(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, "originalLink not found in context", http.StatusBadRequest)
 		return
 	}
-	link, err := c.LinkService.NewLink(originalLink)
+	want, ok := ctx.Value(pcontext.Want).(string)
+	if !ok {
+		http.Error(w, "want not string in context", http.StatusInternalServerError)
+		return
+	}
+	link, err := c.LinkService.NewLink(originalLink, service.WithShort(want))
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
