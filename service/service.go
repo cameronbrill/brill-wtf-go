@@ -35,6 +35,10 @@ func (s *s) NewLink(orig string, options ...NewLinkOption) (Link, error) {
 		}
 	}
 
+	if err := isURL(orig); err != nil {
+		return link, fmt.Errorf("invalid original URL: %w", err)
+	}
+
 	if link.want != "" {
 		if _, ok := s.m[link.want]; ok {
 			return link, fmt.Errorf("short URL already exists: %s", link.want)
