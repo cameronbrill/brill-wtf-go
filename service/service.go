@@ -16,7 +16,9 @@ type s struct {
 func New( /* a database connection would be injected here */ ) *s {
 	return &s{
 		m: map[string]string{
-			"abc": "https://github.com/cameronbrill/create-go-app",
+			"abc":       "https://github.com/cameronbrill/create-go-app",
+			"hi-meagan": "https://www.youtube.com/watch?v=dQw4w9WgXcQ",
+			"hi-brooks": "https://www.youtube.com/watch?v=dQw4w9WgXcQ",
 		},
 	}
 }
