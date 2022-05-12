@@ -12,8 +12,10 @@ type Link struct {
 	Short    string
 }
 
+type NewLinkOption func(*Link) error
+
 // Service defines the interface exposed by this package.
 type Service interface {
-	NewLink(string) (Link, error)
+	NewLink(string, ...NewLinkOption) (Link, error)
 	ShortURLToLink(string) (Link, error)
 }
