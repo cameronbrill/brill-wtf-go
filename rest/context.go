@@ -22,6 +22,10 @@ func linkCtx(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		link := r.URL.Query().Get("link")
 
+		if link == "" {
+			http.Redirect(w, r, "/", http.StatusFound)
+		}
+
 		ctx := context.WithValue(r.Context(), pcontext.Link, link)
 		next.ServeHTTP(w, r.WithContext(ctx))
 	})
