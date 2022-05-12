@@ -45,9 +45,6 @@ func (s *s) NewLink(orig string, options ...NewLinkOption) (Link, error) {
 		}
 		link.Short = link.want
 	} else {
-		if err := isURL(orig); err != nil {
-			return link, fmt.Errorf("invalid original URL: %s", orig)
-		}
 		l, err := generator.NewXKPassword(&config.GeneratorConfig{
 			NumWords:           3,
 			WordLenMin:         3,
@@ -81,7 +78,10 @@ func isURL(str string) error {
 	if err != nil {
 		return err
 	}
-	if u.Scheme == "" || u.Host == "" {
+	if u.Scheme == "" {
+		return fmt.Errorf("missing scheme, replace %s with https://%s", str, str)
+	}
+	if u.Host == "" {
 		return fmt.Errorf("invalid URL: %s", str)
 	}
 	return nil
