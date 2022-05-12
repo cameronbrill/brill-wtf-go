@@ -21,16 +21,12 @@ func New(svc service.Service) LinkServiceController {
 
 func (c LinkServiceController) NewLink(w http.ResponseWriter, r *http.Request) {
 	ctx := r.Context()
-	originalLink := ctx.Value("link")
 	originalLink, ok := ctx.Value(pcontext.Link).(string)
 	if !ok {
 		http.Error(w, "originalLink not found in context", http.StatusBadRequest)
 		return
 	}
-	if want := r.URL.Query().Get("want"); want != "" {
-
-	}
-	link, err := c.LinkService.NewLink(originalLink.(string))
+	link, err := c.LinkService.NewLink(originalLink)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
