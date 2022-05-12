@@ -7,6 +7,7 @@ require (
 	github.com/go-chi/chi/v5 v5.0.7
 	google.golang.org/grpc v1.46.0
 	google.golang.org/protobuf v1.28.0
+	internal/pcontext v0.0.0-00010101000000-000000000000
 )
 
 require (
@@ -39,3 +40,5 @@ require (
 	google.golang.org/genproto v0.0.0-20220426171045-31bebdecfb46 // indirect
 	gopkg.in/yaml.v2 v2.2.3 // indirect
 )
+
+replace internal/pcontext => ./internal/pcontext

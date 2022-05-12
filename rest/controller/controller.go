@@ -4,6 +4,8 @@ import (
 	"encoding/json"
 	"net/http"
 
+	"internal/pcontext"
+
 	"github.com/cameronbrill/brill-wtf-go/service"
 )
 
@@ -19,15 +21,16 @@ func New(svc service.Service) LinkServiceController {
 
 func (c LinkServiceController) NewLink(w http.ResponseWriter, r *http.Request) {
 	ctx := r.Context()
-	originalLink, ok := ctx.Value("link").(string)
+	originalLink := ctx.Value("link")
+	originalLink, ok := ctx.Value(pcontext.Link).(string)
 	if !ok {
 		http.Error(w, "originalLink not found in context", http.StatusBadRequest)
 		return
 	}
-	// TODO: handle desired shortlink
-	// var want string
-	// r.URL.Query().Get("want")
-	link, err := c.LinkService.NewLink(originalLink)
+	if want := r.URL.Query().Get("want"); want != "" {
+
+	}
+	link, err := c.LinkService.NewLink(originalLink.(string))
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
