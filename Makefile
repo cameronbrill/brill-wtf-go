@@ -8,6 +8,9 @@ $(BUILD_TARGETS): %:
 	go build -o '$(BUILD_DIR)/$(subst cmd-,$e,$(subst /,-,$@))' '$@'/main.go
 .PHONY: deps $(BUILD_TARGETS)
 
+rest: deps cmd/rest
+	go build -o tmp/rest ./cmd/rest/main.go
+
 deps: 
 	go mod tidy
 	go get
