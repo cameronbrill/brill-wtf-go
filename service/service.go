@@ -2,6 +2,7 @@ package service
 
 import (
 	"fmt"
+	"net/url"
 
 	"github.com/danmrichards/xkpassgo/pkg/config"
 	"github.com/danmrichards/xkpassgo/pkg/generator"
@@ -24,6 +25,9 @@ func New( /* a database connection would be injected here */ ) *s {
 }
 
 func (s *s) NewLink(orig string) (Link, error) {
+	if err := isURL(orig); err != nil {
+		return Link{}, fmt.Errorf("invalid original URL: %s", orig)
+	}
 	l, err := generator.NewXKPassword(&config.GeneratorConfig{
 		NumWords:           3,
 		WordLenMin:         3,
@@ -51,4 +55,15 @@ func (s *s) ShortURLToLink(short string) (Link, error) {
 		}, nil
 	}
 	return Link{}, fmt.Errorf("invalid short URL: %s", short)
+}
+
+func isURL(str string) error {
+	u, err := url.Parse(str)
+	if err != nil {
+		return err
+	}
+	if u.Scheme == "" || u.Host == "" {
+		return fmt.Errorf("invalid URL: %s", str)
+	}
+	return nil
 }
