@@ -24,7 +24,7 @@ func New(conn string) (service.Service, error) {
 	}, nil
 }
 
-func (s *svc) NewLink(orig string) (service.Link, error) {
+func (s *svc) NewLink(orig string, options ...service.NewLinkOption) (service.Link, error) {
 	link, err := s.client.NewLink(context.Background(), &tgrpc.NewLinkRequest{Original: orig})
 	var Link service.Link
 	if err != nil {
