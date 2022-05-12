@@ -24,25 +24,40 @@ func New( /* a database connection would be injected here */ ) *s {
 	}
 }
 
-func (s *s) NewLink(orig string) (Link, error) {
-	if err := isURL(orig); err != nil {
-		return Link{}, fmt.Errorf("invalid original URL: %s", orig)
-	}
-	l, err := generator.NewXKPassword(&config.GeneratorConfig{
-		NumWords:           3,
-		WordLenMin:         3,
-		WordLenMax:         6,
-		SeparatorCharacter: "-",
-		CaseTransform:      "LOWER",
-		PaddingType:        "FIXED",
-	}).Generate()
+func (s *s) NewLink(orig string, options ...NewLinkOption) (Link, error) {
 	link := Link{
 		Original: orig,
-		Short:    l,
 	}
-	if err != nil {
-		return link, fmt.Errorf("generating link: %w", err)
+	for _, option := range options {
+		err := option(&link)
+		if err != nil {
+			return link, err
+		}
 	}
+
+	if link.want != "" {
+		if _, ok := s.m[link.want]; ok {
+			return link, fmt.Errorf("short URL already exists: %s", link.want)
+		}
+		link.Short = link.want
+	} else {
+		if err := isURL(orig); err != nil {
+			return link, fmt.Errorf("invalid original URL: %s", orig)
+		}
+		l, err := generator.NewXKPassword(&config.GeneratorConfig{
+			NumWords:           3,
+			WordLenMin:         3,
+			WordLenMax:         6,
+			SeparatorCharacter: "-",
+			CaseTransform:      "LOWER",
+			PaddingType:        "FIXED",
+		}).Generate()
+		if err != nil {
+			return link, fmt.Errorf("generating link: %w", err)
+		}
+		link.Short = l
+	}
+
 	s.m[link.Short] = link.Original
 	return link, nil
 }
