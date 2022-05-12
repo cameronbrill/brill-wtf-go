@@ -10,6 +10,7 @@ type Link struct {
 	ID       int64
 	Original string
 	Short    string
+	want     string
 }
 
 type NewLinkOption func(*Link) error
@@ -18,4 +19,11 @@ type NewLinkOption func(*Link) error
 type Service interface {
 	NewLink(string, ...NewLinkOption) (Link, error)
 	ShortURLToLink(string) (Link, error)
+}
+
+func WithShort(want string) NewLinkOption {
+	return func(l *Link) error {
+		l.want = want
+		return nil
+	}
 }
