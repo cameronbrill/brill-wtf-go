@@ -21,3 +21,6 @@ build/**
 
 # swap files
 .sw*
+
+# air files
+tmp/
