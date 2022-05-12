@@ -5,6 +5,7 @@ import (
 
 	"github.com/cameronbrill/brill-wtf-go/rest/controller"
 	"github.com/cameronbrill/brill-wtf-go/service"
+
 	"github.com/go-chi/chi/v5"
 )
 
@@ -38,13 +39,12 @@ func (r linkRouter) routes(args ...bool) chi.Router {
 	})
 
 	mountedRouter.Route("/{link}", func(subRouter chi.Router) {
-		subRouter.Use(linkCtx)
+		subRouter.Use(shortLinkCtx)
 		handlerFunc := r.c.ShortURLToLink
 		if len(args) == 1 && args[0] {
 			handlerFunc = r.c.ShortURLToLinkRedirect
 		}
 		subRouter.Get("/", handlerFunc)
-		subRouter.Post("/", r.c.NewLink)
 	})
 	return mountedRouter
 }
