@@ -32,7 +32,7 @@ func (r linkRouter) routes(args ...bool) chi.Router {
 		}
 	})
 
-	mountedRouter.Route("/new/{link}", func(subRouter chi.Router) {
+	mountedRouter.Route("/new", func(subRouter chi.Router) {
 		subRouter.Use(linkCtx)
 		subRouter.HandleFunc("/", r.c.NewLink)
 	})
