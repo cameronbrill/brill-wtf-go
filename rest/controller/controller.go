@@ -64,7 +64,7 @@ func (c LinkServiceController) ShortURLToLinkRedirect(w http.ResponseWriter, r *
 
 func (c LinkServiceController) getLink(w http.ResponseWriter, r *http.Request) *service.Link {
 	ctx := r.Context()
-	shortLink, ok := ctx.Value("link").(string)
+	shortLink, ok := ctx.Value(pcontext.Link).(string)
 	if !ok {
 		http.Error(w, "shortLink not found in context", http.StatusBadRequest)
 		return nil
