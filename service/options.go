@@ -4,6 +4,7 @@ import (
 	"time"
 
 	"github.com/cameronbrill/brill-wtf-go/model"
+	"github.com/cameronbrill/brill-wtf-go/redis"
 )
 
 type NewLinkOption func(*model.Link) error
@@ -31,3 +32,9 @@ func WithBasicStorage() ServiceOption {
 	}
 }
 
+func WithRedisStorage() ServiceOption {
+	return func(svc *s) error {
+		svc.src = &redis.Storage{}
+		return nil
+	}
+}
