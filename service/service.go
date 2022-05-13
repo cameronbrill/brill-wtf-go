@@ -62,7 +62,10 @@ func (s *s) NewLink(orig string, options ...NewLinkOption) (model.Link, error) {
 		link.Short = l
 	}
 
-	s.src.Set(link.Short, link)
+	err := s.src.Set(link.Short, link)
+	if err != nil {
+		return link, fmt.Errorf("saving link: %w", err)
+	}
 	return link, nil
 }
 
