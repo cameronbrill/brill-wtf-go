@@ -16,7 +16,7 @@ func main() {
 	r.Use(middleware.RealIP)
 	r.Use(middleware.Logger)
 	r.Use(middleware.Recoverer)
-	svc := service.New(service.WithBasicStorage())
+	svc := service.New(service.WithRedisStorage())
 	rest.RegisterLinkServiceRouter(svc, r)
 	port := 3333
 	fmt.Printf("listening on port :%d\n", port)
