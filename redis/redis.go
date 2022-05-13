@@ -4,10 +4,13 @@ import (
 	"context"
 	"crypto/tls"
 	"encoding/json"
+	"errors"
 	"fmt"
 	"os"
 
+	myErr "github.com/cameronbrill/brill-wtf-go/errors"
 	"github.com/cameronbrill/brill-wtf-go/model"
+
 	"github.com/go-redis/redis/v8"
 )
 
@@ -32,6 +35,9 @@ func (s *Storage) Connect() error {
 func (s *Storage) Get(key string) (model.Link, error) {
 	link, err := s.client.Get(context.Background(), key).Result()
 	if err != nil {
+		if errors.Is(err, redis.Nil) {
+			err = myErr.ErrNotFound
+		}
 		fmt.Printf("Error getting link: %+v\n", link)
 		return model.Link{}, err
 	}

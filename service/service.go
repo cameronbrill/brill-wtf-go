@@ -1,12 +1,16 @@
 package service
 
 import (
+	"errors"
 	"fmt"
 	"net/url"
 
+	myErr "github.com/cameronbrill/brill-wtf-go/errors"
 	"github.com/cameronbrill/brill-wtf-go/model"
+
 	"github.com/danmrichards/xkpassgo/pkg/config"
 	"github.com/danmrichards/xkpassgo/pkg/generator"
+	"github.com/go-redis/redis/v8"
 )
 
 type s struct {
@@ -43,7 +47,7 @@ func (s *s) NewLink(orig string, options ...NewLinkOption) (model.Link, error) {
 	}
 
 	if link.Want != "" {
-		if _, err := s.src.Get(link.Want); err != ErrNotFound {
+		if _, err := s.src.Get(link.Want); !(errors.Is(err, myErr.ErrNotFound) || errors.Is(err, redis.Nil)) {
 			return link, fmt.Errorf("short URL already exists: %s", link.Want)
 		}
 		link.Short = link.Want

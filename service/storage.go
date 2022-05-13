@@ -1,6 +1,9 @@
 package service
 
-import "github.com/cameronbrill/brill-wtf-go/model"
+import (
+	myErr "github.com/cameronbrill/brill-wtf-go/errors"
+	"github.com/cameronbrill/brill-wtf-go/model"
+)
 
 type Storage interface {
 	Connect() error
@@ -20,7 +23,7 @@ func (s *BasicStorage) Connect() error {
 func (b *BasicStorage) Get(key string) (model.Link, error) {
 	link, ok := b.m[key]
 	if !ok {
-		return model.Link{}, ErrNotFound
+		return model.Link{}, myErr.ErrNotFound
 	}
 	return link, nil
 }
