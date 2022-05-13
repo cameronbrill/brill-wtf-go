@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"net/url"
 
+	"github.com/cameronbrill/brill-wtf-go/model"
 	"github.com/danmrichards/xkpassgo/pkg/config"
 	"github.com/danmrichards/xkpassgo/pkg/generator"
 )
@@ -14,18 +15,21 @@ type s struct {
 }
 
 // New instantiates a new service.
-func New( /* a database connection would be injected here */ ) *s {
-	return &s{
-		m: map[string]string{
-			"abc":       "https://github.com/cameronbrill/create-go-app",
-			"hi-meagan": "https://www.youtube.com/watch?v=dQw4w9WgXcQ",
-			"hi-brooks": "https://www.youtube.com/watch?v=dQw4w9WgXcQ",
-		},
+func New(options ...ServiceOption) *s {
+	var svc s
+	for _, option := range options {
+		if err := option(&svc); err != nil {
+			panic(err)
+		}
 	}
+	if err := svc.src.Connect(); err != nil {
+		panic(err)
+	}
+	return &svc
 }
 
-func (s *s) NewLink(orig string, options ...NewLinkOption) (Link, error) {
-	link := Link{
+func (s *s) NewLink(orig string, options ...NewLinkOption) (model.Link, error) {
+	link := model.Link{
 		Original: orig,
 	}
 	for _, option := range options {
@@ -63,12 +67,7 @@ func (s *s) NewLink(orig string, options ...NewLinkOption) (Link, error) {
 	return link, nil
 }
 
-func (s *s) ShortURLToLink(short string) (Link, error) {
-	if long, ok := s.m[short]; ok {
-		return Link{
-			Original: long,
-			Short:    short,
-		}, nil
+func (s *s) ShortURLToLink(short string) (model.Link, error) {
 	}
 	return Link{}, fmt.Errorf("invalid short URL: %s", short)
 }

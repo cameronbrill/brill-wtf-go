@@ -4,6 +4,7 @@ import (
 	"context"
 
 	tgrpc "github.com/cameronbrill/brill-wtf-go/grpc"
+	"github.com/cameronbrill/brill-wtf-go/model"
 	"github.com/cameronbrill/brill-wtf-go/service"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials/insecure"
@@ -24,9 +25,9 @@ func New(conn string) (service.Service, error) {
 	}, nil
 }
 
-func (s *svc) NewLink(orig string, options ...service.NewLinkOption) (service.Link, error) {
+func (s *svc) NewLink(orig string, options ...service.NewLinkOption) (model.Link, error) {
 	link, err := s.client.NewLink(context.Background(), &tgrpc.NewLinkRequest{Original: orig})
-	var Link service.Link
+	var Link model.Link
 	if err != nil {
 		return Link, err
 	}
@@ -34,9 +35,9 @@ func (s *svc) NewLink(orig string, options ...service.NewLinkOption) (service.Li
 	return Link, nil
 }
 
-func (s *svc) ShortURLToLink(shortURL string) (service.Link, error) {
+func (s *svc) ShortURLToLink(shortURL string) (model.Link, error) {
 	link, err := s.client.ShortURLToLink(context.Background(), &tgrpc.ShortURLToLinkRequest{Short: shortURL})
-	var Link service.Link
+	var Link model.Link
 	if err != nil {
 		return Link, err
 	}
@@ -44,8 +45,8 @@ func (s *svc) ShortURLToLink(shortURL string) (service.Link, error) {
 	return Link, nil
 }
 
-func unmarshalLink(u *tgrpc.Link) service.Link {
-	return service.Link{
+func unmarshalLink(u *tgrpc.Link) model.Link {
+	return model.Link{
 		ID:       u.Id,
 		Original: u.Original,
 		Short:    u.Short,

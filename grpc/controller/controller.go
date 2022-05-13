@@ -4,6 +4,7 @@ import (
 	"context"
 
 	"github.com/cameronbrill/brill-wtf-go/grpc"
+	"github.com/cameronbrill/brill-wtf-go/model"
 	"github.com/cameronbrill/brill-wtf-go/service"
 )
 
@@ -44,7 +45,7 @@ func (c LinkServiceController) ShortURLToLink(ctx context.Context, req *grpc.Sho
 	return &resp, nil
 }
 
-func marshalLink(l service.Link) *grpc.Link {
+func marshalLink(l model.Link) *grpc.Link {
 	return &grpc.Link{
 		Id:       l.ID,
 		Original: l.Original,
