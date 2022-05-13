@@ -2,7 +2,9 @@ package controller
 
 import (
 	"encoding/json"
+	"fmt"
 	"net/http"
+	"time"
 
 	"internal/pcontext"
 
@@ -32,7 +34,11 @@ func (c LinkServiceController) NewLink(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, "want not string in context", http.StatusInternalServerError)
 		return
 	}
-	link, err := c.LinkService.NewLink(originalLink, service.WithShort(want))
+	ttl, ok := ctx.Value(pcontext.TTL).(time.Duration)
+	if !ok {
+		ttl = 72 * time.Hour
+	}
+	link, err := c.LinkService.NewLink(originalLink, service.WithShortURL(want), service.WithTTL(ttl))
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return

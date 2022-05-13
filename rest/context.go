@@ -28,6 +28,7 @@ func linkCtx(next http.Handler) http.Handler {
 
 		ctx := context.WithValue(r.Context(), pcontext.Link, link)
 		ctx = context.WithValue(ctx, pcontext.Want, r.URL.Query().Get("want"))
+		ctx = context.WithValue(ctx, pcontext.TTL, r.URL.Query().Get("ttl"))
 		next.ServeHTTP(w, r.WithContext(ctx))
 	})
 }
