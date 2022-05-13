@@ -11,7 +11,7 @@ cmd = "make rest"
 # Binary file yields from `cmd`.
 bin = "tmp/rest"
 # Customize binary, can setup environment variables when run your app.
-full_bin = "./tmp/rest"
+full_bin = "ENV=dev ./tmp/rest"
 # Watch these filename extensions.
 include_ext = ["go", "tpl", "tmpl", "html"]
 # Ignore these filename extensions or directories.

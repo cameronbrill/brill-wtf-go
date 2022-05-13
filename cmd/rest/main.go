@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"net/http"
+	"os"
 
 	"github.com/cameronbrill/brill-wtf-go/rest"
 	"github.com/cameronbrill/brill-wtf-go/service"
@@ -16,7 +17,15 @@ func main() {
 	r.Use(middleware.RealIP)
 	r.Use(middleware.Logger)
 	r.Use(middleware.Recoverer)
-	svc := service.New(service.WithRedisStorage())
+	var opt service.ServiceOption
+	if os.Getenv("ENV") == "dev" {
+		println("starting dev server...")
+		opt = service.WithBasicStorage()
+	} else {
+		println("starting server...")
+		opt = service.WithRedisStorage()
+	}
+	svc := service.New(opt)
 	rest.RegisterLinkServiceRouter(svc, r)
 	port := 3333
 	fmt.Printf("listening on port :%d\n", port)
