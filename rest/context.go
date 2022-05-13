@@ -3,6 +3,7 @@ package rest
 import (
 	"context"
 	"net/http"
+	"time"
 
 	"internal/pcontext"
 
@@ -28,7 +29,11 @@ func linkCtx(next http.Handler) http.Handler {
 
 		ctx := context.WithValue(r.Context(), pcontext.Link, link)
 		ctx = context.WithValue(ctx, pcontext.Want, r.URL.Query().Get("want"))
-		ctx = context.WithValue(ctx, pcontext.TTL, r.URL.Query().Get("ttl"))
+		if r.URL.Query().Get("forever") == "true" {
+			ctx = context.WithValue(ctx, pcontext.TTL, time.Duration(0))
+		} else {
+			ctx = context.WithValue(ctx, pcontext.TTL, 72*time.Hour)
+		}
 		next.ServeHTTP(w, r.WithContext(ctx))
 	})
 }
