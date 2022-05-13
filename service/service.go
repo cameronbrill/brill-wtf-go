@@ -10,8 +10,7 @@ import (
 )
 
 type s struct {
-	// a database dependency would go here but instead we're going to have a static map
-	m map[string]string
+	src Storage
 }
 
 // New instantiates a new service.
@@ -43,11 +42,11 @@ func (s *s) NewLink(orig string, options ...NewLinkOption) (model.Link, error) {
 		return link, fmt.Errorf("invalid original URL: %w", err)
 	}
 
-	if link.want != "" {
-		if _, ok := s.m[link.want]; ok {
-			return link, fmt.Errorf("short URL already exists: %s", link.want)
+	if link.Want != "" {
+		if _, err := s.src.Get(link.Want); err != ErrNotFound {
+			return link, fmt.Errorf("short URL already exists: %s", link.Want)
 		}
-		link.Short = link.want
+		link.Short = link.Want
 	} else {
 		l, err := generator.NewXKPassword(&config.GeneratorConfig{
 			NumWords:           3,
@@ -63,13 +62,16 @@ func (s *s) NewLink(orig string, options ...NewLinkOption) (model.Link, error) {
 		link.Short = l
 	}
 
-	s.m[link.Short] = link.Original
+	s.src.Set(link.Short, link)
 	return link, nil
 }
 
 func (s *s) ShortURLToLink(short string) (model.Link, error) {
+	link, err := s.src.Get(short)
+	if err != nil {
+		return model.Link{}, fmt.Errorf("invalid short URL (%s): %w", short, err)
 	}
-	return Link{}, fmt.Errorf("invalid short URL: %s", short)
+	return link, nil
 }
 
 func isURL(str string) error {

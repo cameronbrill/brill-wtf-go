@@ -23,3 +23,11 @@ func WithTTL(ttl time.Duration) NewLinkOption {
 }
 
 type ServiceOption func(*s) error
+
+func WithBasicStorage() ServiceOption {
+	return func(svc *s) error {
+		svc.src = &BasicStorage{}
+		return nil
+	}
+}
+
