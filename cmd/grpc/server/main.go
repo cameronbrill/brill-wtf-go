@@ -7,6 +7,7 @@ import (
 	tgrpc "github.com/cameronbrill/brill-wtf-go/grpc"
 	"github.com/cameronbrill/brill-wtf-go/grpc/controller"
 	"github.com/cameronbrill/brill-wtf-go/service"
+
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/reflection"
 )

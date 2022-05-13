@@ -7,6 +7,7 @@ import (
 
 	"github.com/cameronbrill/brill-wtf-go/rest"
 	"github.com/cameronbrill/brill-wtf-go/service"
+
 	"github.com/go-chi/chi/v5"
 	"github.com/go-chi/chi/v5/middleware"
 )
