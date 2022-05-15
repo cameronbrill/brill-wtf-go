@@ -13,25 +13,24 @@ import (
 	"github.com/go-redis/redis/v8"
 )
 
-type s struct {
-	src Storage
+type svc struct {
 }
 
 // New instantiates a new service.
-func New(options ...ServiceOption) *s {
-	var svc s
+func New(options ...ServiceOption) *svc {
+	var s svc
 	for _, option := range options {
-		if err := option(&svc); err != nil {
+		if err := option(&s); err != nil {
 			panic(err)
 		}
 	}
-	if err := svc.src.Connect(); err != nil {
+	if err := s.src.Connect(); err != nil {
 		panic(err)
 	}
-	return &svc
+	return &s
 }
 
-func (s *s) NewLink(orig string, options ...NewLinkOption) (model.Link, error) {
+func (s *svc) NewLink(orig string, options ...NewLinkOption) (model.Link, error) {
 	link := model.Link{
 		Original: orig,
 	}
@@ -73,7 +72,7 @@ func (s *s) NewLink(orig string, options ...NewLinkOption) (model.Link, error) {
 	return link, nil
 }
 
-func (s *s) ShortURLToLink(short string) (model.Link, error) {
+func (s *svc) ShortURLToLink(short string) (model.Link, error) {
 	link, err := s.src.Get(short)
 	if err != nil {
 		return model.Link{}, fmt.Errorf("invalid short URL (%s): %w", short, err)

@@ -23,18 +23,16 @@ func WithTTL(ttl time.Duration) NewLinkOption {
 	}
 }
 
-type ServiceOption func(*s) error
+type ServiceOption func(*svc) error
 
 func WithBasicStorage() ServiceOption {
-	return func(svc *s) error {
-		svc.src = &BasicStorage{}
+	return func(svc *svc) error {
 		return nil
 	}
 }
 
 func WithRedisStorage() ServiceOption {
-	return func(svc *s) error {
-		svc.src = &redis.Storage{}
+	return func(svc *svc) error {
 		return nil
 	}
 }
