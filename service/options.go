@@ -4,7 +4,7 @@ import (
 	"time"
 
 	"github.com/cameronbrill/brill-wtf-go/model"
-	"github.com/cameronbrill/brill-wtf-go/redis"
+	"github.com/cameronbrill/brill-wtf-go/transport"
 )
 
 type NewLinkOption func(*model.Link) error
@@ -27,12 +27,14 @@ type ServiceOption func(*svc) error
 
 func WithBasicStorage() ServiceOption {
 	return func(svc *svc) error {
+		svc.src = &transport.Basic{}
 		return nil
 	}
 }
 
 func WithRedisStorage() ServiceOption {
 	return func(svc *svc) error {
+		svc.src = &transport.Redis{}
 		return nil
 	}
 }

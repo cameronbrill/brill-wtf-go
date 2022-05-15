@@ -1,4 +1,4 @@
-package redis
+package transport
 
 import (
 	"context"
@@ -14,11 +14,11 @@ import (
 	"github.com/go-redis/redis/v8"
 )
 
-type Storage struct {
+type Redis struct {
 	client *redis.Client
 }
 
-func (s *Storage) Connect() error {
+func (s *Redis) Connect() error {
 	s.client = redis.NewClient(&redis.Options{
 		Addr:      os.Getenv("REDIS_ADDR"),
 		Password:  os.Getenv("REDIS_PASSWORD"),
@@ -32,7 +32,7 @@ func (s *Storage) Connect() error {
 	return nil
 }
 
-func (s *Storage) Get(key string) (model.Link, error) {
+func (s *Redis) Get(key string) (model.Link, error) {
 	link, err := s.client.Get(context.Background(), key).Result()
 	if err != nil {
 		if errors.Is(err, redis.Nil) {
@@ -49,7 +49,7 @@ func (s *Storage) Get(key string) (model.Link, error) {
 	return l, nil
 }
 
-func (s *Storage) Set(key string, value model.Link) error {
+func (s *Redis) Set(key string, value model.Link) error {
 	valB, err := json.Marshal(value)
 	if err != nil {
 		return err

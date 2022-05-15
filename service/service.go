@@ -7,6 +7,7 @@ import (
 
 	myErr "github.com/cameronbrill/brill-wtf-go/errors"
 	"github.com/cameronbrill/brill-wtf-go/model"
+	"github.com/cameronbrill/brill-wtf-go/transport"
 
 	"github.com/danmrichards/xkpassgo/pkg/config"
 	"github.com/danmrichards/xkpassgo/pkg/generator"
@@ -14,6 +15,7 @@ import (
 )
 
 type svc struct {
+	src transport.Storage
 }
 
 // New instantiates a new service.
