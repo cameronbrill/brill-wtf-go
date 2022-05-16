@@ -13,9 +13,12 @@ type linkRouter struct {
 	c *controller.LinkServiceController
 }
 
-func RegisterLinkServiceRouter(svc service.Service, r *chi.Mux) {
+func RegisterLinkServiceRouter(svc service.Service, r *chi.Mux, opts ...Option) {
 	var router linkRouter
-	ctrl := controller.New(svc)
+
+	for _, opt := range opts {
+		opt(&router)
+	}
 	router.c = &ctrl
 
 	r.Mount("/", router.routes(true))
@@ -48,3 +51,5 @@ func (r linkRouter) routes(args ...bool) chi.Router {
 	})
 	return mountedRouter
 }
+
+type Option func(*linkRouter) error
