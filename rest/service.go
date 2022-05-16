@@ -53,3 +53,10 @@ func (r linkRouter) routes(args ...bool) chi.Router {
 }
 
 type Option func(*linkRouter) error
+
+func WithRenderer(renderer web.Renderer) Option {
+	return func(r *linkRouter) error {
+		r.renderer = renderer
+		return nil
+	}
+}
