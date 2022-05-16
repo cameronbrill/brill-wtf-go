@@ -7,6 +7,7 @@ import (
 
 	"github.com/cameronbrill/brill-wtf-go/rest"
 	"github.com/cameronbrill/brill-wtf-go/service"
+	"github.com/cameronbrill/brill-wtf-go/web"
 
 	"github.com/go-chi/chi/v5"
 	"github.com/go-chi/chi/v5/middleware"
@@ -27,7 +28,7 @@ func main() {
 		opt = service.WithRedisStorage()
 	}
 	svc := service.New(opt)
-	rest.RegisterLinkServiceRouter(svc, r)
+	rest.RegisterLinkServiceRouter(svc, r, rest.WithRenderer(web.New()))
 	port := 3333
 	fmt.Printf("listening on port :%d\n", port)
 	err := http.ListenAndServe(fmt.Sprintf(":%d", port), r)
