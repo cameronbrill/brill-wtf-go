@@ -53,44 +53,46 @@ func (c LinkServiceController) NewLink(w http.ResponseWriter, r *http.Request) {
 	_, err = w.Write(jsonLink)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
 	}
 }
 
 func (c LinkServiceController) ShortURLToLink(w http.ResponseWriter, r *http.Request) {
-	link, err := c.getLink(w, r)
+	link, err := c.getLink(r)
 	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
 	jsonLink, err := json.Marshal(link)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
 	}
 
 	_, err = w.Write(jsonLink)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
 	}
 }
 
 func (c LinkServiceController) ShortURLToLinkRedirect(w http.ResponseWriter, r *http.Request) {
-	link, err := c.getLink(w, r)
+	link, err := c.getLink(r)
 	if err != nil {
 		return
 	}
 	http.Redirect(w, r, link.Original, http.StatusFound)
 }
 
-func (c LinkServiceController) getLink(w http.ResponseWriter, r *http.Request) (*model.Link, error) {
+func (c LinkServiceController) getLink(r *http.Request) (*model.Link, error) {
 	ctx := r.Context()
 	shortLink, ok := ctx.Value(pcontext.Link).(string)
 	if !ok {
-		http.Error(w, "shortLink not found in context", http.StatusBadRequest)
 		return nil, fmt.Errorf("shortLink not found in context")
 	}
 	link, err := c.LinkService.ShortURLToLink(shortLink)
 	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
-		return nil, err
+		return &model.Link{Short: shortLink}, err
 	}
 	return &link, nil
 }
