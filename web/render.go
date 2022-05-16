@@ -35,7 +35,11 @@ type pageData struct {
 
 func (p *PageRenderer) Render(w http.ResponseWriter, r *http.Request, page Page, opts ...RenderOption) {
 	for _, opt := range opts {
-		opt(p)
+		err := opt(p)
+		if err != nil {
+			http.Error(w, err.Error(), http.StatusInternalServerError)
+			return
+		}
 	}
 
 	t, err := template.ParseFiles(fmt.Sprintf("web/%s.gohtml", page))

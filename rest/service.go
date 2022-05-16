@@ -19,7 +19,10 @@ func RegisterLinkServiceRouter(svc service.Service, r *chi.Mux, opts ...Option) 
 	var router linkRouter
 
 	for _, opt := range opts {
-		opt(&router)
+		err := opt(&router)
+		if err != nil {
+			panic(err)
+		}
 	}
 
 	ctrl := controller.New(svc, router.renderer)
