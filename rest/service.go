@@ -5,12 +5,14 @@ import (
 
 	"github.com/cameronbrill/brill-wtf-go/rest/controller"
 	"github.com/cameronbrill/brill-wtf-go/service"
+	"github.com/cameronbrill/brill-wtf-go/web"
 
 	"github.com/go-chi/chi/v5"
 )
 
 type linkRouter struct {
-	c *controller.LinkServiceController
+	c        *controller.LinkServiceController
+	renderer web.Renderer
 }
 
 func RegisterLinkServiceRouter(svc service.Service, r *chi.Mux, opts ...Option) {
@@ -19,6 +21,8 @@ func RegisterLinkServiceRouter(svc service.Service, r *chi.Mux, opts ...Option) 
 	for _, opt := range opts {
 		opt(&router)
 	}
+
+	ctrl := controller.New(svc, router.renderer)
 	router.c = &ctrl
 
 	r.Mount("/", router.routes(true))

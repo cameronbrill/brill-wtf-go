@@ -10,15 +10,18 @@ import (
 
 	"github.com/cameronbrill/brill-wtf-go/model"
 	"github.com/cameronbrill/brill-wtf-go/service"
+	"github.com/cameronbrill/brill-wtf-go/web"
 )
 
 type LinkServiceController struct {
 	LinkService service.Service
+	renderer    web.Renderer
 }
 
-func New(svc service.Service) LinkServiceController {
+func New(svc service.Service, renderer web.Renderer) LinkServiceController {
 	return LinkServiceController{
 		LinkService: svc,
+		renderer:    renderer,
 	}
 }
 
