@@ -9,3 +9,7 @@ type Renderer interface {
 }
 
 type Page string
+
+const (
+	NotFound Page = "404"
+)
