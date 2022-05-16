@@ -2,12 +2,14 @@ package controller
 
 import (
 	"encoding/json"
+	"errors"
 	"fmt"
 	"net/http"
 	"time"
 
 	"internal/pcontext"
 
+	cerrors "github.com/cameronbrill/brill-wtf-go/errors"
 	"github.com/cameronbrill/brill-wtf-go/model"
 	"github.com/cameronbrill/brill-wtf-go/service"
 	"github.com/cameronbrill/brill-wtf-go/web"
@@ -82,6 +84,11 @@ func (c LinkServiceController) ShortURLToLink(w http.ResponseWriter, r *http.Req
 func (c LinkServiceController) ShortURLToLinkRedirect(w http.ResponseWriter, r *http.Request) {
 	link, err := c.getLink(r)
 	if err != nil {
+		if errors.Is(err, cerrors.ErrNotFound) && c.renderer != nil {
+			c.renderer.Render(w, r, "404", web.WithShortURL(link.Short))
+			return
+		}
+		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
 	http.Redirect(w, r, link.Original, http.StatusFound)
