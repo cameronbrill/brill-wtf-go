@@ -8,6 +8,7 @@ import (
 	"github.com/cameronbrill/brill-wtf-go/web"
 
 	"github.com/go-chi/chi/v5"
+	"github.com/rs/cors"
 )
 
 type linkRouter struct {
@@ -28,10 +29,7 @@ func RegisterLinkServiceRouter(svc service.Service, r *chi.Mux, opts ...Option) 
 	ctrl := controller.New(svc, router.renderer)
 	router.c = &ctrl
 
-	r.Mount("/", router.routes(true))
-	r.Mount("/links", router.routes())
-	r.Mount("/link", router.routes())
-}
+	r.Use(cors.Default().Handler)
 
 func (r linkRouter) routes(args ...bool) chi.Router {
 	mountedRouter := chi.NewRouter()
