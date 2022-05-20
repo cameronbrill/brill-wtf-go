@@ -1,6 +1,8 @@
 package rest
 
 import (
+	"os"
+
 	"github.com/cameronbrill/brill-wtf-go/rest/controller"
 	"github.com/cameronbrill/brill-wtf-go/service"
 	"github.com/cameronbrill/brill-wtf-go/web"
@@ -27,7 +29,14 @@ func RegisterLinkServiceRouter(svc service.Service, r *chi.Mux, opts ...Option) 
 	ctrl := controller.New(svc, router.renderer)
 	router.c = &ctrl
 
-	r.Use(cors.Default().Handler)
+	corsHandler := cors.New(cors.Options{
+		AllowedOrigins: []string{"*.cameronbrill.me", "*.brill.wtf"}})
+
+	if os.Getenv("ENV") == "dev" {
+		corsHandler = cors.AllowAll()
+	}
+
+	r.Use(corsHandler.Handler)
 
 	r.Route("/link", func(subRouter chi.Router) {
 		subRouter.Use(linkCtx)
