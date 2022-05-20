@@ -2,29 +2,28 @@ package rest
 
 import (
 	"context"
+	"encoding/json"
 	"net/http"
 	"time"
 
 	"internal/pcontext"
-
-	"github.com/go-chi/chi/v5"
 )
 
-func shortLinkCtx(next http.Handler) http.Handler {
-	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		link := chi.URLParam(r, "link")
-
-		ctx := context.WithValue(r.Context(), pcontext.Link, link)
-		next.ServeHTTP(w, r.WithContext(ctx))
-	})
+type requestBody struct {
+	Original string `json:"original"`
 }
 
 func linkCtx(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		link := r.URL.Query().Get("link")
-
+		link := r.URL.Query().Get("short")
 		if link == "" {
-			http.Redirect(w, r, "/", http.StatusFound)
+			var bod requestBody
+			err := json.NewDecoder(r.Body).Decode(&bod)
+			if err != nil {
+				http.Error(w, err.Error(), http.StatusBadRequest)
+				return
+			}
+			link = bod.Original
 		}
 
 		ctx := context.WithValue(r.Context(), pcontext.Link, link)

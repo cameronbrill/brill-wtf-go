@@ -3,7 +3,6 @@ package controller
 import (
 	"encoding/json"
 	"errors"
-	"fmt"
 	"net/http"
 	"time"
 
@@ -63,11 +62,29 @@ func (c LinkServiceController) NewLink(w http.ResponseWriter, r *http.Request) {
 }
 
 func (c LinkServiceController) ShortURLToLink(w http.ResponseWriter, r *http.Request) {
-	link, err := c.getLink(r)
+	ctx := r.Context()
+	shortLink, ok := ctx.Value(pcontext.Link).(string)
+	if !ok {
+		http.Error(w, "shortLink not found in context", http.StatusNotFound)
+		return
+	}
+	var link model.Link
+	link, err := c.LinkService.ShortURLToLink(shortLink)
 	if err != nil {
+		if errors.Is(err, cerrors.ErrNotFound) {
+			http.Error(w, err.Error(), http.StatusNotFound)
+			return
+		}
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
+
+	shouldRedirect := r.URL.Query().Get("should-redirect") != ""
+	if shouldRedirect {
+		http.Redirect(w, r, link.Original, http.StatusFound)
+		return
+	}
+
 	jsonLink, err := json.Marshal(link)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
@@ -79,30 +96,4 @@ func (c LinkServiceController) ShortURLToLink(w http.ResponseWriter, r *http.Req
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
-}
-
-func (c LinkServiceController) ShortURLToLinkRedirect(w http.ResponseWriter, r *http.Request) {
-	link, err := c.getLink(r)
-	if err != nil {
-		if errors.Is(err, cerrors.ErrNotFound) && c.renderer != nil {
-			c.renderer.Render(w, r, "404", web.WithShortURL(link.Short))
-			return
-		}
-		http.Error(w, err.Error(), http.StatusInternalServerError)
-		return
-	}
-	http.Redirect(w, r, link.Original, http.StatusFound)
-}
-
-func (c LinkServiceController) getLink(r *http.Request) (*model.Link, error) {
-	ctx := r.Context()
-	shortLink, ok := ctx.Value(pcontext.Link).(string)
-	if !ok {
-		return nil, fmt.Errorf("shortLink not found in context")
-	}
-	link, err := c.LinkService.ShortURLToLink(shortLink)
-	if err != nil {
-		return &model.Link{Short: shortLink}, err
-	}
-	return &link, nil
 }
