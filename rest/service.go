@@ -28,7 +28,7 @@ func RegisterLinkServiceRouter(svc service.Service, r *chi.Mux, opts ...Option) 
 	router.c = &ctrl
 
 	r.Use(cors.Handler(cors.Options{
-		AllowedOrigins:   []string{"https://brill.wtf", "http://brill.wtf"},
+		AllowedOrigins:   []string{"https://brill.wtf", "http://brill.wtf", "https://www.brill.wtf", "http://www.brill.wtf"},
 		AllowedMethods:   []string{"GET", "POST", "PUT", "DELETE", "OPTIONS"},
 		AllowedHeaders:   []string{"Accept", "Authorization", "Content-Type", "X-CSRF-Token"},
 		AllowCredentials: false,
