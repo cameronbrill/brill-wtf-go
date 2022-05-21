@@ -5,8 +5,8 @@ go 1.18
 require (
 	github.com/danmrichards/xkpassgo v1.0.0
 	github.com/go-chi/chi/v5 v5.0.7
+	github.com/go-chi/cors v1.2.1
 	github.com/go-redis/redis/v8 v8.11.5
-	github.com/rs/cors v1.8.2
 	google.golang.org/grpc v1.46.0
 	google.golang.org/protobuf v1.28.0
 	internal/pcontext v0.0.0-00010101000000-000000000000

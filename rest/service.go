@@ -1,14 +1,12 @@
 package rest
 
 import (
-	"os"
-
 	"github.com/cameronbrill/brill-wtf-go/rest/controller"
 	"github.com/cameronbrill/brill-wtf-go/service"
 	"github.com/cameronbrill/brill-wtf-go/web"
 
 	"github.com/go-chi/chi/v5"
-	"github.com/rs/cors"
+	"github.com/go-chi/cors"
 )
 
 type linkRouter struct {
@@ -29,14 +27,13 @@ func RegisterLinkServiceRouter(svc service.Service, r *chi.Mux, opts ...Option) 
 	ctrl := controller.New(svc, router.renderer)
 	router.c = &ctrl
 
-	corsHandler := cors.New(cors.Options{
-		AllowedOrigins: []string{"https://*.brill.wtf"}})
-
-	if os.Getenv("ENV") == "dev" {
-		corsHandler = cors.AllowAll()
-	}
-
-	r.Use(corsHandler.Handler)
+	r.Use(cors.Handler(cors.Options{
+		AllowedOrigins:   []string{"https://brill.wtf", "http://brill.wtf"},
+		AllowedMethods:   []string{"GET", "POST", "PUT", "DELETE", "OPTIONS"},
+		AllowedHeaders:   []string{"Accept", "Authorization", "Content-Type", "X-CSRF-Token"},
+		AllowCredentials: false,
+		MaxAge:           300, // Maximum value not ignored by any of major browsers
+	}))
 
 	r.Route("/link", func(subRouter chi.Router) {
 		subRouter.Use(linkCtx)
