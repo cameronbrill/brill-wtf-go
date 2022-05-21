@@ -30,7 +30,7 @@ func RegisterLinkServiceRouter(svc service.Service, r *chi.Mux, opts ...Option) 
 	router.c = &ctrl
 
 	corsHandler := cors.New(cors.Options{
-		AllowedOrigins: []string{"*.cameronbrill.me", "*.brill.wtf"}})
+		AllowedOrigins: []string{"https://*.brill.wtf"}})
 
 	if os.Getenv("ENV") == "dev" {
 		corsHandler = cors.AllowAll()
