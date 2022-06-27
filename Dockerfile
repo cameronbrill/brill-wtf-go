@@ -20,4 +20,9 @@ COPY --from=build /app/tmp/rest ./rest
 
 EXPOSE 3333
 
-CMD [ "apidump", "--service", "brill-wtf", "--filter", "port 3333", "-u", "root", "-c", "./rest" ]
+COPY ./entrypoint.sh ./
+
+RUN chmod +x ./entrypoint.sh
+
+ENTRYPOINT [ "./entrypoint.sh" ]
+CMD [ "akita" ]
