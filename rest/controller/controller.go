@@ -12,6 +12,7 @@ import (
 	"github.com/cameronbrill/brill-wtf-go/model"
 	"github.com/cameronbrill/brill-wtf-go/service"
 	"github.com/cameronbrill/brill-wtf-go/web"
+	"github.com/go-chi/chi/v5"
 )
 
 type LinkServiceController struct {
@@ -68,10 +69,14 @@ func (c LinkServiceController) NewLink(w http.ResponseWriter, r *http.Request) {
 }
 
 func (c LinkServiceController) ShortURLToLink(w http.ResponseWriter, r *http.Request) {
-	shortLink := r.URL.Query().Get("want")
+	shortLink := chi.URLParam(r, "slug")
+
 	if shortLink == "" {
-		http.Error(w, "shortLink not found in context", http.StatusNotFound)
-		return
+		shortLink = r.URL.Query().Get("want")
+		if shortLink == "" {
+			http.Error(w, "shortLink not found in context", http.StatusNotFound)
+			return
+		}
 	}
 	var link model.Link
 	link, err := c.LinkService.ShortURLToLink(shortLink)
