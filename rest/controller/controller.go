@@ -12,7 +12,6 @@ import (
 	"github.com/cameronbrill/brill-wtf-go/model"
 	"github.com/cameronbrill/brill-wtf-go/service"
 	"github.com/cameronbrill/brill-wtf-go/web"
-	"github.com/go-chi/chi/v5"
 )
 
 type LinkServiceController struct {
@@ -27,19 +26,13 @@ func New(svc service.Service, renderer web.Renderer) LinkServiceController {
 	}
 }
 
-type requestBody struct {
-	Original string `json:"original"`
-}
-
 func (c LinkServiceController) NewLink(w http.ResponseWriter, r *http.Request) {
-	var bod requestBody
-	err := json.NewDecoder(r.Body).Decode(&bod)
-	if err != nil {
-		http.Error(w, err.Error(), http.StatusBadRequest)
+	ctx := r.Context()
+	originalLink, ok := ctx.Value(pcontext.Link).(string)
+	if !ok {
+		http.Error(w, "originalLink not found in context", http.StatusBadRequest)
 		return
 	}
-	originalLink := bod.Original
-	ctx := r.Context()
 	want, ok := ctx.Value(pcontext.Want).(string)
 	if !ok {
 		http.Error(w, "want not string in context", http.StatusInternalServerError)
@@ -69,14 +62,11 @@ func (c LinkServiceController) NewLink(w http.ResponseWriter, r *http.Request) {
 }
 
 func (c LinkServiceController) ShortURLToLink(w http.ResponseWriter, r *http.Request) {
-	shortLink := chi.URLParam(r, "slug")
-
-	if shortLink == "" {
-		shortLink = r.URL.Query().Get("want")
-		if shortLink == "" {
-			http.Error(w, "shortLink not found in context", http.StatusNotFound)
-			return
-		}
+	ctx := r.Context()
+	shortLink, ok := ctx.Value(pcontext.Link).(string)
+	if !ok {
+		http.Error(w, "shortLink not found in context", http.StatusNotFound)
+		return
 	}
 	var link model.Link
 	link, err := c.LinkService.ShortURLToLink(shortLink)
