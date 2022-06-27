@@ -11,6 +11,7 @@ import (
 
 	"github.com/go-chi/chi/v5"
 	"github.com/go-chi/chi/v5/middleware"
+	"github.com/go-chi/cors"
 )
 
 func main() {
@@ -23,6 +24,10 @@ func main() {
 	if os.Getenv("ENV") == "dev" {
 		println("starting dev server...")
 		opt = service.WithBasicStorage()
+		r.Use(cors.Handler(cors.Options{
+			AllowedOrigins: []string{"http://localhost:3000"},
+			AllowedMethods: []string{"GET", "POST", "PUT", "DELETE"},
+		}))
 	} else {
 		println("starting server...")
 		opt = service.WithRedisStorage()
