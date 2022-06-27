@@ -23,7 +23,7 @@ grpc/generate:
 		${PROTO_DIR}/*.proto
 
 docker-build: 
-	docker build -t brill.wtf .
+	DOCKER_BUILDKIT=1 docker build -t brill.wtf .
 
 docker-run:
 	docker run \
