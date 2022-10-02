@@ -1,6 +1,8 @@
 package rest
 
 import (
+	"os"
+
 	"github.com/cameronbrill/brill-wtf-go/rest/controller"
 	"github.com/cameronbrill/brill-wtf-go/service"
 	"github.com/cameronbrill/brill-wtf-go/web"
@@ -27,8 +29,12 @@ func RegisterLinkServiceRouter(svc service.Service, r *chi.Mux, opts ...Option) 
 	ctrl := controller.New(svc, router.renderer)
 	router.c = &ctrl
 
+	ogns := []string{"https://brill.wtf", "http://brill.wtf", "https://www.brill.wtf", "http://www.brill.wtf"}
+	if os.Getenv("ENV") == "dev" {
+		ogns = []string{"*"}
+	}
 	r.Use(cors.Handler(cors.Options{
-		AllowedOrigins:   []string{"https://brill.wtf", "http://brill.wtf", "https://www.brill.wtf", "http://www.brill.wtf"},
+		AllowedOrigins:   ogns,
 		AllowedMethods:   []string{"GET", "POST", "PUT", "DELETE", "OPTIONS"},
 		AllowedHeaders:   []string{"Accept", "Authorization", "Content-Type", "X-CSRF-Token"},
 		AllowCredentials: false,
