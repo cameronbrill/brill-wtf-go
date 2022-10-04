@@ -7,4 +7,6 @@ if [ "$1" = 'akita' ]; then
                 --filter "port 3333" \
                 -u root \
                 -c ./rest
+else
+        ./rest
 fi
