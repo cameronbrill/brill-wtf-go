@@ -43,8 +43,9 @@ func RegisterLinkServiceRouter(svc service.Service, r *chi.Mux, opts ...Option) 
 
 	r.Route("/link", func(subRouter chi.Router) {
 		subRouter.Use(linkCtx)
-		subRouter.Get("/", router.c.ShortURLToLink)
 		subRouter.Post("/", router.c.NewLink)
+		subRouter.Get("/{slug}", router.c.ShortURLToLink)
+		subRouter.Get("/", router.c.ShortURLToLink)
 	})
 }
 

@@ -1,0 +1,12 @@
+services:
+  - type: web
+    name: brill.wtf
+    env: docker
+    dockerfilePath: ./Dockerfile
+    healthCheckPath: /
+    envVars:
+      - key: REDIS_ADDR
+        fromService:
+          type: redis
+          name: brill.wtf
+          property: connectionString
