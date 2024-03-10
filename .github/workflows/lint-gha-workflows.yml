@@ -7,8 +7,6 @@ on:
 
 jobs:
   actionlint:
-    env:
-      DEBUG: ${{toJson(vars)}}
     name: lint workflows
     runs-on: ubuntu-latest
     steps:
