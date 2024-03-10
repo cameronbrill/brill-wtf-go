@@ -47,7 +47,7 @@ jobs:
         with:
           go-version: ${{ needs.prepare.outputs.LATEST_GO_VERSION }}
       - name: Test with Go
-        run: go test -coverprofile=./cover.out -covermode=atomic -coverpkg=./... -json > TestResults-${{ matrix.go-version }}.json
+        run: go test -coverprofile=./cover.out -covermode=atomic -coverpkg=./... -json > TestResults-${{ needs.prepare.outputs.LATEST_GO_VERSION }}.json
 
       - name: check test coverage
         uses: vladopajic/go-test-coverage@v2
