@@ -4,11 +4,13 @@ go 1.18
 
 require (
 	github.com/danmrichards/xkpassgo v1.0.0
-	github.com/go-chi/chi/v5 v5.0.7
+	github.com/go-chi/chi/v5 v5.0.10
 	github.com/go-chi/cors v1.2.1
+	github.com/go-chi/docgen v1.2.0
 	github.com/go-redis/redis/v8 v8.11.5
 	google.golang.org/grpc v1.46.0
 	google.golang.org/protobuf v1.28.0
+	gopkg.in/yaml.v2 v2.4.0
 	internal/pcontext v0.0.0-00010101000000-000000000000
 )
 
@@ -31,7 +33,6 @@ require (
 	github.com/mitchellh/mapstructure v1.4.2 // indirect
 	github.com/niemeyer/pretty v0.0.0-20200227124842-a10e7caefd8e // indirect
 	github.com/pelletier/go-toml v1.7.0 // indirect
-	github.com/pkg/errors v0.9.1 // indirect
 	github.com/rogpeppe/go-internal v1.3.2 // indirect
 	github.com/sirupsen/logrus v1.7.0 // indirect
 	github.com/spf13/afero v1.2.2 // indirect
@@ -47,7 +48,6 @@ require (
 	golang.org/x/text v0.3.7 // indirect
 	google.golang.org/genproto v0.0.0-20220426171045-31bebdecfb46 // indirect
 	gopkg.in/check.v1 v1.0.0-20200227125254-8fa46927fb4f // indirect
-	gopkg.in/yaml.v2 v2.4.0 // indirect
 	gopkg.in/yaml.v3 v3.0.0-20210107192922-496545a6307b // indirect
 )
 

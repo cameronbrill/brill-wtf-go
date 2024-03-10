@@ -68,6 +68,18 @@ func (c LinkServiceController) NewLink(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
+// Shorten URL to link
+//
+//		@summary        Given a URL, shortens it, stores it, and returns it as a slug to append to brill.wtf/{slug}
+//		@tags           link
+//		@produce        json
+
+//	 @param          slug      path     string  true    "slug"
+//	 @param          want      query    string  true    "want"
+
+// @success        200
+// @failure        500
+// @router         /link [get]
 func (c LinkServiceController) ShortURLToLink(w http.ResponseWriter, r *http.Request) {
 	shortLink := chi.URLParam(r, "slug")
 
