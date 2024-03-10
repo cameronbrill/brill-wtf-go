@@ -7,7 +7,7 @@ on:
     branches: [main]
 
 env:
-  GO_VERSIONS: "['1.18.1']"
+  GO_VERSIONS: "['1.18.1', '1.18', '1.19', '1.20', '1.21', '1.22']"
 
 jobs:
   prepare:
