@@ -7,17 +7,19 @@ on:
     branches: [main]
 
 env:
-  GO_VERSIONS: "['1.18.1', '1.18', '1.19', '1.20', '1.21', '1.22']"
+  GO_VERSIONS: "['1.22', '1.21', '1.20', '1.19', '1.18', '1.18.1']"
 
 jobs:
   prepare:
     runs-on: ubuntu-latest
     outputs:
       GO_VERSIONS: ${{env.GO_VERSIONS}}
+      LATEST_GO_VERSION: ${{fromJson(env.GO_VERSIONS)[0]}}
     steps:
       - name: Compute outputs
         run: |
           echo "GO_VERSIONS=${{ env.GO_VERSIONS }}" >> "$GITHUB_OUTPUT"
+          echo "LATEST_GO_VERSION=${{ env.LATEST_GO_VERSION }}" >> "$GITHUB_OUTPUT"
 
   merge-gatekeeper:
     name: Mergeability
@@ -39,7 +41,7 @@ jobs:
     needs: prepare
     strategy:
       matrix:
-        go-version: ${{ fromJson(needs.prepare.outputs.GO_VERSIONS) }}
+        go-version: ${{ needs.prepare.outputs.LATEST_GO_VERSION }}
 
     steps:
       - uses: actions/checkout@v3
@@ -62,7 +64,7 @@ jobs:
     needs: prepare
     strategy:
       matrix:
-        go-version: ${{ fromJson(needs.prepare.outputs.GO_VERSIONS) }}
+        go-version: ${{ needs.prepare.outputs.LATEST_GO_VERSION }}
     steps:
       - uses: actions/checkout@v3
       - name: Setup go
@@ -77,7 +79,7 @@ jobs:
     needs: prepare
     strategy:
       matrix:
-        go-version: ${{ fromJson(needs.prepare.outputs.GO_VERSIONS) }}
+        go-version: ${{ needs.prepare.outputs.LATEST_GO_VERSION }}
     steps:
       - uses: actions/checkout@v3
       - name: Setup go
