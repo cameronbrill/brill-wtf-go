@@ -97,7 +97,7 @@ jobs:
         with:
           go_version: ${{ matrix.go-version }}
           golangci_lint_flags: --config ./.golangci.yaml
-          version: latest
+          golangci_lint_version: latest
   build:
     needs: prepare
     strategy:
