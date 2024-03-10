@@ -92,14 +92,11 @@ jobs:
           - ${{ needs.prepare.outputs.LATEST_GO_VERSION }}
     steps:
       - uses: actions/checkout@v4
-      - name: Setup go
-        uses: actions/setup-go@v5
-        with:
-          go-version: ${{ matrix.go-version }}
       - name: Run linter
-        uses: golangci/golangci-lint-action@v4
+        uses: reviewdog/action-golangci-lint@v2
         with:
-          args: --config ./.golangci.yaml
+          go_version: ${{ matrix.go-version }}
+          golangci_lint_flags: --config ./.golangci.yaml
           version: latest
   build:
     needs: prepare
