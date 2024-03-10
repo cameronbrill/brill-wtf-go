@@ -6,43 +6,111 @@ on:
   pull_request:
     branches: [main]
 
+env:
+  GO_VERSIONS: "['1.22.1']"
+
 jobs:
+  prepare:
+    runs-on: ubuntu-latest
+    outputs:
+      GO_VERSIONS: ${{env.GO_VERSIONS}}
+      LATEST_GO_VERSION: ${{fromJson(env.GO_VERSIONS)[0]}}
+    steps:
+      - name: Compute outputs
+        run: |
+          echo "GO_VERSIONS=${{ env.GO_VERSIONS }}" >> "$GITHUB_OUTPUT"
+          echo "LATEST_GO_VERSION=${{ env.LATEST_GO_VERSION }}" >> "$GITHUB_OUTPUT"
+
+  merge-gatekeeper:
+    name: Mergeability
+    runs-on: ubuntu-latest
+    permissions:
+      checks: read
+      statuses: read
+    steps:
+      - name: Run Merge Gatekeeper
+        uses: upsidr/merge-gatekeeper@v1
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          self: Mergeability
+
+
+  test:
+    name: run tests
+    runs-on: ubuntu-latest
+    needs: prepare
+
+    steps:
+      - uses: actions/checkout@v4
+      - name: Setup go
+        uses: actions/setup-go@v5
+        with:
+          go-version: ${{ needs.prepare.outputs.LATEST_GO_VERSION }}
+      - name: Test with Go
+        run: go test -coverprofile=./cover.out -covermode=atomic -coverpkg=./... -json > TestResults-${{ needs.prepare.outputs.LATEST_GO_VERSION }}.json
+
+      - name: check test coverage
+        uses: vladopajic/go-test-coverage@v2
+        with:
+          config: ./.testcoverage.yml
+
+
+      - name: Upload Go test results
+        uses: actions/upload-artifact@v4
+        with:
+          name: Go-results-${{ needs.prepare.outputs.LATEST_GO_VERSION }}
+          path: TestResults-${{ needs.prepare.outputs.LATEST_GO_VERSION }}.json
+
+
   format:
     name: format go files
     runs-on: ubuntu-latest
+    needs: prepare
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - name: Setup go
-        uses: actions/setup-go@v3
+        uses: actions/setup-go@v5
         with:
-          go-version: 1.18.1
+          go-version: ${{ needs.prepare.outputs.LATEST_GO_VERSION }}
       - name: Format
         run: gofmt -l -d -s .
+
+  govulncheck:
+    runs-on: ubuntu-latest
+    name: Run govulncheck
+    needs: prepare
+    steps:
+      - id: govulncheck
+        uses: golang/govulncheck-action@v1
+        with:
+           go-version-input: ${{needs.prepare.outputs.LATEST_GO_VERSION}}
+           go-package: ./...
+
   lint:
     name: lint go files
     runs-on: ubuntu-latest
+    needs: prepare
     steps:
-      - uses: actions/checkout@v3
-      - name: Setup go
-        uses: actions/setup-go@v3
-        with:
-          go-version: 1.18.1
+      - uses: actions/checkout@v4
       - name: Run linter
-        uses: golangci/golangci-lint-action@v3
+        uses: reviewdog/action-golangci-lint@v2
         with:
-          args: --config ./.golangci.yaml
-          version: latest
+          go_version: ${{ needs.prepare.outputs.LATEST_GO_VERSION }}
+          golangci_lint_flags: --config ./.golangci.yaml
+          golangci_lint_version: latest
   build:
+    needs: prepare
     strategy:
       matrix:
-        package: [example]
+        package: [rest, grpc/server]
+        go-version: ${{ fromJson(needs.prepare.outputs.GO_VERSIONS) }}
     name: build go binary
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - name: Setup go
-        uses: actions/setup-go@v3
+        uses: actions/setup-go@v5
         with:
-          go-version: 1.18.1
+          go-version: ${{ matrix.go-version }}
       - name: Build binary
         run: go build -o ./build/${{ matrix.package }} ./cmd/${{ matrix.package }}
