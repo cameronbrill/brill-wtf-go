@@ -10,6 +10,26 @@ env:
   GO_VERSIONS: "['1.18.1']"
 
 jobs:
+  merge-gatekeeper:
+    name: Mergeability
+    runs-on: ubuntu-latest
+    permissions:
+      checks: read
+      statuses: read
+    steps:
+      - name: Run Merge Gatekeeper
+        uses: upsidr/merge-gatekeeper@v1
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          self: Mergeability
+
+  actionlint:
+    name: lint github actions
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: reviewdog/action-actionlint@v1
+
   test:
     name: run tests
     runs-on: ubuntu-latest
