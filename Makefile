@@ -16,6 +16,9 @@ deps:
 	go mod tidy
 	go get
 
+lint:
+	golangci-lint run --config .golangci.yml
+
 grpc/generate:
 	protoc -Igrpc \
 		--go_out=./${PROTO_DIR} --go_opt=paths=source_relative \
