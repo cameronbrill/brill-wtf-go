@@ -17,7 +17,7 @@ jobs:
     steps:
       - name: Compute outputs
         run: |
-          echo "GO_VERSIONS=${{ env.GO_VERSIONS }}" >> $GITHUB_OUTPUT
+          echo "GO_VERSIONS=${{ env.GO_VERSIONS }}" >> "$GITHUB_OUTPUT"
 
   merge-gatekeeper:
     name: Mergeability
