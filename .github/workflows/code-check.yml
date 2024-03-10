@@ -35,7 +35,7 @@ jobs:
   build:
     strategy:
       matrix:
-        package: [example]
+        package: [rest, grpc/server]
     name: build go binary
     runs-on: ubuntu-latest
     steps:
