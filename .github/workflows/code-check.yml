@@ -82,6 +82,18 @@ jobs:
           go-version: ${{ matrix.go-version }}
       - name: Format
         run: gofmt -l -d -s .
+
+  govulncheck:
+    runs-on: ubuntu-latest
+    name: Run govulncheck
+    needs: prepare
+    steps:
+      - id: govulncheck
+        uses: golang/govulncheck-action@v1
+        with:
+           go-version-input: ${{needs.prepare.outputs.LATEST_GO_VERSION}}
+           go-package: ./...
+
   lint:
     name: lint go files
     runs-on: ubuntu-latest
